@@ -77,4 +77,3 @@ Inside location /health
 - add_header → Adds a response header.
 - return → Immediately returns a status code and body.
 
-
