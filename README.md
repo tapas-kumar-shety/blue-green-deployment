@@ -44,59 +44,6 @@ flowchart LR
     style Proxy fill:#f9f9f9
 ```
 
-### Deployment Flow
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant P as Nginx Proxy
-    participant B as Blue Env
-    participant G as Green Env
-    participant D as Deploy Script
-
-    Note over C,G: Initial State: Blue is Active
-    
-    C->>P: Request
-    P->>B: Forward to Blue
-    B->>P: Response
-    P->>C: Return Response
-    
-    Note over D,G: Deployment Starts
-    D->>G: 1. Deploy New Version
-    D->>G: 2. Health Check
-    G-->>D: Health Status OK
-    
-    D->>P: 3. Update Config
-    D->>P: 4. Reload Nginx
-    
-    Note over C,G: After Deployment: Green is Active
-    
-    C->>P: Request
-    P->>G: Forward to Green
-    G->>P: Response
-    P->>C: Return Response
-```
-
-### Rollback Process
-```mermaid
-sequenceDiagram
-    participant P as Nginx Proxy
-    participant B as Blue Env
-    participant G as Green Env
-    participant D as Deploy Script
-
-    Note over P,G: Deployment to Green Failed
-    
-    D->>G: 1. Deploy New Version
-    G-->>D: Health Check Failed
-    
-    D->>G: 2. Stop Deployment
-    D->>P: 3. Keep Blue Active
-    
-    Note over P,B: System Remains on Blue
-    
-    P->>B: Traffic Continues to Blue
-    B->>P: Response from Blue
-```
 
 ## Core Concepts
 
@@ -343,18 +290,11 @@ docker exec proxy nginx -s reload
    docker-compose up -d
    ```
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 06f07bcd98f0a4bac8f5aef0f30f094123dd68bf
 This implementation provides a robust, production-ready blue-green deployment solution with:
 - Zero-downtime deployments
 - Automated health checks
 - Instant rollback capability
 - Comprehensive logging
 - Clear deployment process
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 06f07bcd98f0a4bac8f5aef0f30f094123dd68bf
