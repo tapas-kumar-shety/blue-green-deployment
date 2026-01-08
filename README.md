@@ -1,7 +1,5 @@
 # Blue-Green Deployment Implementation
 
-Project Page: [roadmap.sh/projects/blue-green-deployment](https://roadmap.sh/projects/blue-green-deployment)
-
 ## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Core Concepts](#core-concepts)
@@ -181,11 +179,6 @@ verify_health() {
       container_name: ${COLOR}-web
   ```
   
-- **Traffic Switching**: Implemented via Nginx proxy
-  - Live Demo: http://bgd.nikhilmishra.live
-  - Blue Environment: http://bgd.nikhilmishra.live:8081
-  - Green Environment: http://bgd.nikhilmishra.live:8082
-
 - **Health Checks**: Implemented at multiple levels
   ```json
   # Health Check Response
@@ -350,111 +343,6 @@ docker exec proxy nginx -s reload
    docker-compose up -d
    ```
 
-## Implementation Proofs
-
-#### 1. Environment Setup
-**Blue Environment Running:**
-```bash
-$ curl http://bgd.nikhilmishra.live:8081
-# Output shows blue environment page with version 1.0.0
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Blue Environment</title>
-    <style>
-        body { background-color: #e6f3ff; ... }
-    </style>
-</head>
-<body>
-    <h1>Blue Environment</h1>
-    <p>Version: 1.0.0</p>
-    ...
-</body>
-</html>
-```
-
-**Green Environment Running:**
-```bash
-$ curl http://bgd.nikhilmishra.live:8082
-# Output shows green environment page with version 1.0.1
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Green Environment</title>
-    <style>
-        body { background-color: #f0fff0; ... }
-    </style>
-</head>
-<body>
-    <h1>Green Environment</h1>
-    <p>Version: 1.0.1</p>
-    ...
-</body>
-</html>
-```
-
-#### 2. Health Check System
-**Health Check Responses:**
-```bash
-$ curl http://bgd.nikhilmishra.live:8081/health
-{"status":"healthy"}
-
-$ curl http://bgd.nikhilmishra.live:8082/health
-{"status":"healthy"}
-```
-
-#### 3. Proxy Configuration
-**Nginx Configuration:**
-```bash
-$ docker exec proxy cat /etc/nginx/nginx.conf
-# Output shows active routing configuration
-http {
-    upstream backend {
-        server localhost:8081;  # Currently routing to blue
-    }
-    ...
-}
-```
-
-#### 4. Deployment Process
-**Deployment Log:**
-```bash
-$ ./deploy.sh
-[2025-02-18 10:28:20] Starting deployment to green environment
-[2025-02-18 10:28:25] Health check passed
-[2025-02-18 10:28:26] Successfully switched traffic
-```
-
-#### 5. Container Status
-**Docker Containers Running:**
-```bash
-$ docker ps
-CONTAINER ID   IMAGE          PORTS                    NAMES
-********       nginx:alpine   0.0.0.0:8081->80/tcp    blue-web
-********       nginx:alpine   0.0.0.0:8082->80/tcp    green-web
-********       nginx:alpine   0.0.0.0:80->80/tcp      proxy
-```
-
-#### 6. Zero-Downtime Verification
-**Traffic Switch Test:**
-```bash
-# Continuous curl during deployment shows no errors
-$ for i in {1..100}; do curl -s http://bgd.nikhilmishra.live/ > /dev/null && echo "Request $i: Success" || echo "Request $i: Failed"; done
-Request 1: Success
-Request 2: Success
-...
-Request 100: Success
-```
-
-#### 7. Rollback Capability
-**Failed Deployment Recovery:**
-```bash
-$ ./deploy.sh
-[2025-02-18 10:30:15] Starting deployment to green environment
-[2025-02-18 10:30:20] ERROR: Health check failed
-[2025-02-18 10:30:21] Rolling back to blue environment
-[2025-02-18 10:30:22] Rollback successful
-```
 
 This implementation provides a robust, production-ready blue-green deployment solution with:
 - Zero-downtime deployments
@@ -463,5 +351,4 @@ This implementation provides a robust, production-ready blue-green deployment so
 - Comprehensive logging
 - Clear deployment process
 
-Live demo available at: http://bgd.nikhilmishra.live
-Note: This demo is hosted on AWS EC2 and may not be always available as the instance may be stopped to save costs.
+
