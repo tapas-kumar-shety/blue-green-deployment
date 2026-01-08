@@ -343,12 +343,18 @@ docker exec proxy nginx -s reload
    docker-compose up -d
    ```
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 06f07bcd98f0a4bac8f5aef0f30f094123dd68bf
 This implementation provides a robust, production-ready blue-green deployment solution with:
 - Zero-downtime deployments
 - Automated health checks
 - Instant rollback capability
 - Comprehensive logging
 - Clear deployment process
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 06f07bcd98f0a4bac8f5aef0f30f094123dd68bf
